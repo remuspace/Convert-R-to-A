@@ -1,89 +1,89 @@
-def unos():
-    ulaz = input()
-    return ulaz
+def get():
+    cons_input = input()
+    return cons_input
 
 
-def unos_lista(ulaz):
-    ulaz_lista = ulaz.replace(',', '')
-    ulaz_lista = ulaz_lista.replace('.', '')
-    ulaz_lista = ulaz_lista.split()
-    return ulaz_lista
+def get_list(input):
+    input_list = input.replace(',', '')
+    input_list = input_list.replace('.', '')
+    input_list = input_list.split()
+    return input_list
 
 
-def uzmi_velike_reci(reci):
-    velike_reci = []
-    for i in range(len(reci)):
-        if reci[i].isupper():
-            velike_reci.append(reci[i])
-    return velike_reci
+def get_big_words(words):
+    big_words = []
+    for i in range(len(words)):
+        if words[i].isupper():
+            big_words.append(words[i])
+    return big_words
 
 
-def proveri(velike_reci):
-    rimski = ['I', 'V', 'X', 'L', 'C', 'D', 'M']
+def check(big_words):
+    roman = ['I', 'V', 'X', 'L', 'C', 'D', 'M']
 
-    for rec in velike_reci:
-        for slovo in rec:
-            if slovo not in rimski: return False
+    for word in big_words:
+        for letter in word:
+            if letter not in roman: return False
 
     return True
 
 
-def konvertuj(velika_rec):
-    rimski = ['I', 'V', 'X', 'L', 'C', 'D', 'M']
-    arapski = [1, 5, 10, 50, 100, 500, 1000]
-    slova = list(velika_rec)
-    suma = 0
-    br = 0
-    while br < len(slova):
-        gledaj_dalje = True
-        if br + 1 < len(slova):
-            if slova[br] not in ['I', 'X', 'C']:
-                index = rimski.index(slova[br])
-                broj = arapski[index]
-                suma += broj
+def convert(big_word):
+    roman = ['I', 'V', 'X', 'L', 'C', 'D', 'M']
+    arab = [1, 5, 10, 50, 100, 500, 1000]
+    letters = list(big_word)
+    sum = 0
+    cnt = 0
+    while cnt < len(letters):
+        look_next = True
+        if cnt + 1 < len(letters):
+            if letters[cnt] not in ['I', 'X', 'C']:
+                index = roman.index(letters[cnt])
+                cntoj = arab[index]
+                sum += cntoj
             else:
-                for x in range((len(rimski) - 1) // 2):
-                    if slova[br] == rimski[2 * x] and gledaj_dalje:  # IV
-                        for y in range(len(rimski)):
-                            if y > 2 * x and slova[br + 1] == rimski[y]:
-                                broj = arapski[y] - arapski[2 * x]
-                                suma += broj
-                                br += 1
-                                gledaj_dalje = False
+                for x in range((len(roman) - 1) // 2):
+                    if letters[cnt] == roman[2 * x] and look_next:  # IV
+                        for y in range(len(roman)):
+                            if y > 2 * x and letters[cnt + 1] == roman[y]:
+                                cntoj = arab[y] - arab[2 * x]
+                                sum += cntoj
+                                cnt += 1
+                                look_next = False
                                 break
-                        if not gledaj_dalje: break
+                        if not look_next: break
 
-                        if gledaj_dalje:  # II
-                            suma += arapski[2 * x]
+                        if look_next:  # II
+                            sum += arab[2 * x]
                             break
         else:
-            index = rimski.index(slova[br])
-            broj = arapski[index]
-            suma += broj
+            index = roman.index(letters[cnt])
+            cntoj = arab[index]
+            sum += cntoj
 
-        br += 1
+        cnt += 1
 
-    return suma
-
-
-def modifikuj(ulaz, reci, velike_reci):
-    reci_tz = ulaz.split()
-    izlaz_lista = []
-    for i in range(len(velike_reci)):
-        arapski_broj = str(konvertuj(velike_reci[i]))
-
-        for n in range(len(reci)):
-            if reci[n] == velike_reci[i]:
-                reci_tz[n] = reci_tz[n].replace(velike_reci[i], arapski_broj)
-
-        izlaz_lista = reci_tz
-    izlaz = ' '.join(izlaz_lista)
-    return izlaz
+    return sum
 
 
-recenica = unos()
-reci_bez_tz = unos_lista(recenica)
-reci_velike = uzmi_velike_reci(reci_bez_tz)
+def modify(input, words, big_words):
+    words_tz = input.split()
+    output_list = []
+    for i in range(len(big_words)):
+        arab_cntoj = str(convert(big_words[i]))
 
-if proveri(reci_velike):
-    print(modifikuj(recenica, reci_bez_tz, reci_velike), end="")
+        for n in range(len(words)):
+            if words[n] == big_words[i]:
+                words_tz[n] = words_tz[n].replace(big_words[i], arab_cntoj)
+
+        output_list = words_tz
+    output = ' '.join(output_list)
+    return output
+
+
+sentence = get()
+words_no_tz = get_list(sentence)
+words_big = get_big_words(words_no_tz)
+
+if check(words_big):
+    print(modify(sentence, words_no_tz, words_big), end="")
